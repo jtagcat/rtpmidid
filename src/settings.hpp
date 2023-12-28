@@ -51,7 +51,7 @@ struct settings_t {
   std::vector<connect_to_t> connect_to;
 };
 
-extern settings_t settings;
+extern settings_t settings; // NOLINT
 } // namespace rtpmididns
 
 template <>

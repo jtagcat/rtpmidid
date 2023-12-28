@@ -31,7 +31,7 @@
 namespace rtpmididns {
 std::unique_ptr<::rtpmidid::mdns_rtpmidi_t> mdns;
 settings_t settings;
-void parse_argv(int argc, char **argv);
+void parse_argv(const std::vector<const char *> &args);
 } // namespace rtpmididns
 
 static bool exiting = false;
@@ -54,7 +54,12 @@ void sigint_f(int) {
 }
 
 int main(int argc, char **argv) {
-  rtpmididns::parse_argv(argc, argv);
+  std::vector<const char *> args;
+  for (int i = 0; i < argc; i++) {
+    args.push_back(argv[i]);
+  }
+
+  rtpmididns::parse_argv(args);
 
   signal(SIGINT, sigint_f);
   signal(SIGTERM, sigterm_f);
@@ -71,12 +76,13 @@ int main(int argc, char **argv) {
 
     // Create all the alsa network midipeers
     for (const auto &announce : rtpmididns::settings.alsa_announces) {
-      router->add_peer(rtpmididns::make_local_alsa_multi_listener(announce.name, aseq));
+      router->add_peer(
+          rtpmididns::make_local_alsa_multi_listener(announce.name, aseq));
     }
     // Create all the rtpmidi network midipeers
     for (const auto &announce : rtpmididns::settings.rtpmidi_announces) {
-      router->add_peer(
-          rtpmididns::make_network_rtpmidi_multi_listener(announce.name, announce.port, aseq));
+      router->add_peer(rtpmididns::make_network_rtpmidi_multi_listener(
+          announce.name, announce.port, aseq));
     }
     // Connect to all static endpoints
     for (const auto &connect_to : rtpmididns::settings.connect_to) {
