@@ -78,6 +78,7 @@ public:
       other.to = {0, 0};
       return *this;
     }
+    // NOLINTNEXTLINE
     ~connection_t() {
       if (from.client && from.port && to.client && to.port)
         aseq->disconnect(from, to);
