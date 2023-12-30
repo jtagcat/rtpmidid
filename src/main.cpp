@@ -33,7 +33,7 @@ namespace rtpmididns {
 std::unique_ptr<::rtpmidid::mdns_rtpmidi_t> mdns;
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 settings_t settings;
-void parse_argv(const std::vector<const char *> &args);
+void parse_argv(const std::vector<std::string> &argv);
 } // namespace rtpmididns
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
@@ -58,12 +58,12 @@ void sigint_f(int) {
 
 // NOLINTNEXTLINE(bugprone-exception-escape)
 int main(int argc, char **argv) {
-  std::vector<const char *> args;
-  for (int i = 0; i < argc; i++) {
+  std::vector<std::string> args;
+  for (int i = 1; i < argc; i++) {
     args.push_back(argv[i]);
   }
 
-  rtpmididns::parse_argv(args);
+  rtpmididns::parse_argv(std::move(args));
 
   signal(SIGINT, sigint_f);
   signal(SIGTERM, sigterm_f);
